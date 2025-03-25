@@ -1,15 +1,16 @@
+import { useState } from "react";
+import { FlatList } from "react-native";
+
+import { Input } from "@components/Input";
 import { Header } from "@components/Header";
+import { Filter } from "@components/Filter";
+import { Button } from "@components/Button";
 import { Highlight } from "@components/Highlight";
+import { ListEmpty } from "@components/ListEmpty";
+import { ButtonIcon } from "@components/ButtonIcon";
+import { PlayerCard } from "@components/PlayerCard";
 
 import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
-import { ButtonIcon } from "@components/ButtonIcon";
-import { Input } from "@components/Input";
-import { Filter } from "@components/Filter";
-import { FlatList } from "react-native";
-import { useState } from "react";
-import { PlayerCard } from "@components/PlayerCard";
-import { ListEmpty } from "@components/ListEmpty";
-import { Button } from "@components/Button";
  
 export function Players() {
   const [team, setTeam] = useState('Time A')
