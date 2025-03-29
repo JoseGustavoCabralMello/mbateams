@@ -14,6 +14,7 @@ import { Input } from "@components/Input";
 import { Header } from "@components/Header";
 import { Filter } from "@components/Filter";
 import { Button } from "@components/Button";
+import { Loading } from "@components/Loading";
 import { Highlight } from "@components/Highlight";
 import { ListEmpty } from "@components/ListEmpty";
 import { ButtonIcon } from "@components/ButtonIcon";
@@ -26,17 +27,18 @@ type RouteParams = {
 }
  
 export function Players() {
+  const [isLoading, setIsLoading] = useState(true);
   const [newPlayerName, setNewPlayerName] = useState('');
   const [team, setTeam] = useState('Time A');
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
+  
+  const newPlayerNameInputRef = useRef<TextInput>(null);
 
   const navigation = useNavigation();
   const route = useRoute();
-
+  
   const { group } = route.params as RouteParams;
-
-  const newPlayerNameInputRef = useRef<TextInput>(null);
-
+  
   async function handleAddPlayer() {
     if(newPlayerName.trim().length === 0) {
       return Alert.alert('Nova pessoa', 'Informe o nome da pessoa para adicionar.');
@@ -66,8 +68,12 @@ export function Players() {
 
   async function fetchPlayersByTeam() {
     try {
+      setIsLoading(true);
+
       const playersByTeam = await playersGetByGroupAndTeam(group, team);
+      
       setPlayers(playersByTeam)
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
       Alert.alert('Pessoas', 'Não foi possível carregar as pessoas do time selecionado.');
@@ -101,7 +107,7 @@ export function Players() {
   async function handleGroupRemove() {
     Alert.alert(
       'Remover',
-      'Deseja remover o grupo?',
+      'Deseja remover a turma?',
       [
         { text: 'Não', style: 'cancel' },
         { text: 'Sim', onPress: () => groupRemove() }
@@ -138,7 +144,7 @@ export function Players() {
           onPress={handleAddPlayer}
         />
       </Form>
-
+        
       <HeaderList>
          <FlatList 
            data={['Time A', 'Time B']}
@@ -158,6 +164,8 @@ export function Players() {
          </NumberOfPlayers>
        </HeaderList>
 
+       {
+      isLoading? <Loading /> :
        <FlatList 
          data={players}
          keyExtractor={item => item.name}
@@ -173,9 +181,10 @@ export function Players() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[{ paddingBottom: 100 }, players.length === 0 && { flex: 1 }]}
           />
+        }
 
           <Button 
-            title="Remover Turma"
+            title="Remover turma"
             type="SECONDARY"
             onPress={handleGroupRemove}
         />
